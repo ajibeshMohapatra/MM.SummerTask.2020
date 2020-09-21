@@ -20,6 +20,11 @@
 			return $query->row_array();
 		}
 
+		public function get_articles_by_id($id){
+			$query = $this->db->get_where('articles',array('id' => $id));
+			return $query->row_array();
+		}
+
 		public function create_article($post_image){
 			$slug = url_title($this->input->post('title'));
 
@@ -53,12 +58,44 @@
 			return $this->db->update('articles', $data);
 		}
 
-		public function get_articles_by_admin($admin_id){
+		public function get_articles_by_user($user_id){
 
 			$this->db->order_by('articles.id','DESC');
 
-			$this->db->join('admins','admins.id = articles.admin_id');
-			$query = $this->db->get_where('articles',array('admin_id' => $admin_id));
+			$this->db->join('users','users.id = articles.user_id');
+			$query = $this->db->get_where('articles',array('user_id' => $user_id));
 			return $query->result_array();
 		}
+
+		public function search_articles($key){
+			$this->db->like('title',$key);
+			$this->db->or_like('body',$key);
+			$query = $this->db->get('articles');
+			return $query->result_array();
+		}
+
+		public function view_count($id){
+			$this->db->where('id', $id);
+			$data = array(
+				'view' => $this->input->post('view')
+			);
+			return $this->db->update('articles', $data);
+		}
+
+		public function get_popular_articles($slug = FALSE,$limit = FALSE,$offset = FALSE){
+
+			if($limit){
+				$this->db->limit($limit,$offset);
+			}
+
+			if ($slug === FALSE) {
+				$this->db->order_by('view', 'DESC');
+				$query = $this->db->get('articles');
+				return $query->result_array();
+			}
+
+			$query = $this->db->get_where('articles',array('slug' => $slug));
+			return $query->row_array();
+		}
+	
 	}

@@ -24,6 +24,7 @@
 			$data['article'] = $this->article_model->get_articles($slug);
 			$post_id = $data['article']['id'];
 			$data['comments'] = $this->comment_model->get_comments($post_id);
+			$data['requests'] = $this->comment_model->get_requests($post_id);
 
 			if(empty($data['article'])){
 				show_404();
@@ -39,7 +40,7 @@
 		public function create(){
 
 			if(!$this->session->userdata('logged_in')){
-				redirect('admins/login');
+				redirect('users/login');
 			}
 
 			$data['title'] = 'Create Posts';
@@ -82,7 +83,11 @@
 		public function delete($id){
 
 			if(!$this->session->userdata('logged_in')){
-				redirect('admins/login');
+				redirect('users/login');
+			}
+
+			if($this->session->userdata('user_id') != $this->article_model->get_articles($slug)['user_id']){
+				redirect('articles');
 			}
 
 			$this->article_model->delete_article($id);
@@ -95,7 +100,7 @@
 		public function edit($slug){
 
 			if(!$this->session->userdata('logged_in')){
-				redirect('admins/login');
+				redirect('users/login');
 			}
 
 			$data['article'] = $this->article_model->get_articles($slug);
@@ -118,7 +123,7 @@
 		public function update(){
 
 			if(!$this->session->userdata('logged_in')){
-				redirect('admins/login');
+				redirect('userss/login');
 			}
 
 			$this->article_model->update_article();
@@ -126,5 +131,27 @@
 			$this->session->set_flashdata('post_updated','Your post has been updated.');
 
 			redirect('articles');
+		}
+
+		public function search(){
+			$key = $this->input->post('title');
+			$data['results'] = $this->article_model->search_articles($key);
+
+			$this->load->view('templates/header');
+			$this->load->view('articles/search',$data);
+			$this->load->view('templates/footer');
+		}
+
+		public function view_counter($id){
+			$this->article_model->view_count($id);
+		}
+		
+		public function popular($offset = 0){
+
+		$data['articles'] = $this->article_model->get__popular_articles(FALSE,3,$offset);
+
+		 $this->load->view('templates/header');
+		 $this->load->view('pages/home',$data);
+		 $this->load->view('templates/footer');
 		}
 	}

@@ -9,10 +9,15 @@
 		<div class="col-md-9">
 			<small class="post-date">Posted on <?php echo $article['created_at']; ?></small><br>
 			<?php echo word_limiter($article['body'], 60); ?>
-			<p><a href="<?php echo site_url('/articles/'.$article['slug']); ?>">Read More</a></p>
+			<p><a href="<?php echo site_url('/articles/'.$article['slug']); ?>">Read More</a>
+			</p>
 		</div>
 	</div>
 <?php endforeach; ?>
+<br>
 <div class="pagination-link">
 <?php echo $this->pagination->create_links(); ?>
 </div>
+<br>
+<br>
+<br>

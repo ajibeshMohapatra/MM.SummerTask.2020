@@ -41,21 +41,24 @@
             <li><a href="<?php echo base_url(); ?>">HOME</a></li>
             <li><a href="<?php echo base_url(); ?>articles">ARTICLES</a></li>
             <?php if(!$this->session->userdata('logged_in')) : ?>
-              <li><a href="<?php echo base_url(); ?>admins/login">LOGIN</a></li>
-              <li><a href="<?php echo base_url(); ?>admins/register">REGISTER</a></li>
+              <li><a href="<?php echo base_url(); ?>users/login">LOGIN</a></li>
+              <li><a href="<?php echo base_url(); ?>users/register">REGISTER</a></li>
             <?php endif; ?>
-            <?php if($this->session->userdata('logged_in')) : ?>
-              <li><a href="<?php echo base_url(); ?>admins/panel">MY PANEL</a></li>
-              <li><a href="<?php echo base_url(); ?>articles/create">CREATE ARTICLE</a></li>
-              <li><a href="<?php echo base_url(); ?>admins/logout">LOGOUT</a></li>
+            <?php if($this->session->userdata('role_id') == 1) : ?>
+              <li><a href="<?php echo base_url(); ?>users/panel">MY PANEL</a></li>
+              <?php endif; ?>
+              <?php if($this->session->userdata('logged_in')) : ?>
+              <li><a href="<?php echo base_url(); ?>users/logout">LOGOUT</a></li>
             <?php endif; ?>
             </ul>
         </div>
             <li>
-                <form class="navbar-form navbar-right" action="">
+                <div class="navbar-form navbar-right">
+                  <?php echo form_open('articles/search'); ?>
                   <div class="input-group">
                     <input
                       type="text"
+                      name="title"
                       class="form-control"
                       placeholder="Search Articles"
                     />
@@ -66,11 +69,13 @@
                     
                   </div>
                 </form>
+              </div>
             </li>
           </ul>
         </div>
       </div>
     </nav>
+    
 
     <div class="container">
 
